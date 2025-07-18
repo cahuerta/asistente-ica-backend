@@ -25,7 +25,7 @@ app.post("/procesar", async (req, res) => {
 
   try {
     const chat = await openai.chat.completions.create({
-      model: "gpt-4", // Cambiar a "gpt-3.5-turbo" si no tienes acceso
+      model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
     });
 
