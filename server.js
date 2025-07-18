@@ -1,50 +1,21 @@
-import express from "express";
-import cors from "cors";
-import { json } from "body-parser";
-import dotenv from "dotenv";
-import OpenAI from "openai";
-
-dotenv.config();
+import express from 'express';
+import cors from 'cors';
 
 const app = express();
 const port = process.env.PORT || 10000;
 
-app.use(cors({ origin: "*" }));
-app.use(json());
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+// Ruta de prueba
+app.get('/', (req, res) => {
+  res.send('Servidor backend en http://localhost:' + port);
 });
 
-app.post("/procesar", async (req, res) => {
-  const { texto } = req.body;
+// Puedes agregar más rutas aquí...
 
-  console.log("Texto recibido:", texto);
-
-  const prompt = `Genera una ficha médica breve, receta médica y orden de exámenes para el siguiente caso clínico: "${texto}"`;
-
-  try {
-    const chat = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const result = chat.choices[0].message.content;
-    console.log("Respuesta GPT:", result);
-
-    res.json({ ficha: result });
-  } catch (error) {
-    console.error("❌ Error al procesar:", error);
-    // Mostrar el mensaje de error directamente
-    res.status(500).json({
-      error: "Fallo al generar la ficha",
-      detalle: error.message,
-      tipo: error.name,
-      stack: error.stack,
-    });
-  }
-});
-
+// Iniciar servidor
 app.listen(port, () => {
   console.log(`Servidor backend en http://localhost:${port}`);
 });
